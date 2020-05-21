@@ -24,15 +24,16 @@
 
 ## TRAEFIK
 
-- Run command `docker-compose -f docker-compose-traefik.yml up -d --build"
+- Run command `docker-compose -f docker-compose-traefik.yml up -d --build`
 
 ### RUN IN DEVELOPMENT MODE
 
-- Run command `docker-compose up -d --build"
+- Run command
+  `docker-compose up -d --build`
 
 ### RUN IN PRODUCTION MODE
 
-- Run command `docker-compose -f docker-compose-production.yml up -d --build"
+- Run command `docker-compose -f docker-compose-production.yml up -d --build`
 
 ### INCLUDE
 
