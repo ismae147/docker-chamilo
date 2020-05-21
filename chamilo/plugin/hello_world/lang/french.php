@@ -1,3 +1,0 @@
-<?php
-
-$strings['HelloPlugin'] = "Salut!";

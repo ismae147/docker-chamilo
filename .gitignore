@@ -1,6 +1,5 @@
 db_data/
 .env
 
-chamilo/app/courses/*
-!chamilo/app/courses/.gitkeep
-!chamilo/app/courses/proxy.php
+chamilo/
+chamilo/*
