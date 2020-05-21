@@ -1,0 +1,15 @@
+FROM php:7.2-apache
+RUN apt-get clean
+RUN apt-get update
+RUN apt-get install -y zlib1g-dev zip libwebp-dev libjpeg-dev 
+RUN apt-get install -y libpng-dev
+RUN apt-get install -y libxpm-dev
+RUN apt-get install -y libfreetype6-dev 
+RUN docker-php-ext-install mysqli pdo pdo_mysql zip
+RUN docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
+  --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir
+RUN docker-php-ext-install gd
+RUN a2enmod rewrite
+RUN service apache2 restart
+ADD ./apache.conf /etc/apache2/sites-available/ibwp.devcort.com.conf
+RUN a2dissite 000-default.conf && a2ensite ibwp.devcort.com.conf

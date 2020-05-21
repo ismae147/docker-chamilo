@@ -1,0 +1,62 @@
+version: "3.7"
+
+services:
+  # PHP
+  ibwp_chamilo_php_apache:
+    build: .
+    container_name: "ibwp_chamilo_php_apache"
+    ports:
+      - "8080:80"
+    volumes:
+      - ./chamilo:/var/www/html
+      - ./php.ini:/usr/local/etc/php/conf.d/30-custom.ini
+      - ./apache.prod.conf:/etc/apache2/sites-available/${DOMAIN_APACHE_LOCAL}.conf
+    env_file:
+      - ./.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ibwp_chamilo_http.rule=Host(`${DOMAIN_APACHE_REAL}`)"
+      - "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.ibwp_chamilo_http.middlewares=https_redirect"
+      - "traefik.http.routers.ibwp_chamilo_https.rule=Host(`${DOMAIN_APACHE_REAL}`)"
+      - "traefik.http.routers.ibwp_chamilo_https.tls=true"
+      - "traefik.http.routers.ibwp_chamilo_https.entrypoints=websecure"
+      - "traefik.http.routers.ibwp_chamilo_https.tls.certresolver=devcort"
+    networks:
+      - traefik
+    depends_on:
+      - ibwp_chamilo_mysql
+  # Database
+  ibwp_chamilo_mysql:
+    container_name: "ibwp_chamilo_mysql"
+    image: mysql:5.7
+    volumes:
+      - ./db_data:/var/lib/mysql
+    env_file:
+      - ./.env
+    networks:
+      - traefik
+  # phpmyadmin
+  ibwp_chamilo_phpmyadmin:
+    container_name: "ibwp_chamilo_phpmyadmin"
+    depends_on:
+      - ibwp_chamilo_mysql
+    image: phpmyadmin/phpmyadmin
+    env_file:
+      - ./.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ibwp_chamilo_phpmyadmin_http.rule=Host(`${DOMAIN_PHP_MYADMIN_REAL}`)"
+      - "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.ibwp_chamilo_phpmyadmin_http.middlewares=https_redirect"
+      - "traefik.http.routers.ibwp_chamilo_phpmyadmin_https.rule=Host(`${DOMAIN_PHP_MYADMIN_REAL}`)"
+      - "traefik.http.routers.ibwp_chamilo_phpmyadmin_https.tls=true"
+      - "traefik.http.routers.ibwp_chamilo_phpmyadmin_https.entrypoints=websecure"
+      - "traefik.http.routers.ibwp_chamilo_phpmyadmin_https.tls.certresolver=devcort"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external:
+      name: traefik_primary
