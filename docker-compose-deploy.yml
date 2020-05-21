@@ -3,10 +3,8 @@ version: "3.7"
 services:
   # PHP
   ibwp_chamilo_php_apache:
-    build: .
+    build: ./Dockerfile.prod
     container_name: "ibwp_chamilo_php_apache"
-    ports:
-      - "8080:80"
     volumes:
       - ./chamilo:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/30-custom.ini
